@@ -1,8 +1,8 @@
-package offer;
+package sword._07_栈组队列;
 
 import java.util.Stack;
 
-public class _07StackToQueue {
+public class StackToQueue {
 
     static class MQueue {
         Stack<Integer> stack1;
