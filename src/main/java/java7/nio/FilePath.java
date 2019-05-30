@@ -4,9 +4,23 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketOption;
+import java.net.StandardProtocolFamily;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.channels.AsynchronousFileChannel;
+import java.nio.channels.CompletionHandler;
+import java.nio.channels.DatagramChannel;
 import java.nio.channels.FileChannel;
+import java.nio.channels.MembershipKey;
+import java.nio.channels.NetworkChannel;
+import java.nio.channels.spi.SelectorProvider;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
@@ -29,11 +43,89 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class FilePath {
 
     public static void main(String[] args) {
-        fileChannel();
+        multicastChannel();
+    }
+
+    public static void multicastChannel() {
+        try {
+            NetworkInterface networkInterface = NetworkInterface.getByName("eth0");
+            System.out.println(networkInterface);
+            // open channel
+            DatagramChannel dc = DatagramChannel.open(StandardProtocolFamily.INET);
+            // set channel multicast
+            dc.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+            dc.bind(new InetSocketAddress(8080));
+            dc.setOption(StandardSocketOptions.IP_MULTICAST_IF, networkInterface);
+            // join group 多播地址 https://www.xuebuyuan.com/914776.html
+            InetAddress group = InetAddress.getByName("224.0.0.1");
+            MembershipKey key = dc.join(group, networkInterface);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void networkChannel() {
+        SelectorProvider provider = SelectorProvider.provider();
+        try {
+            NetworkChannel socketChannel = provider.openSocketChannel();
+            SocketAddress address = new InetSocketAddress(3080);
+            socketChannel = socketChannel.bind(address);
+            Set<SocketOption<?>> options = socketChannel.supportedOptions();
+            System.out.println(options);
+            socketChannel.setOption(StandardSocketOptions.IP_TOS, 3);
+            boolean keepAlive = socketChannel.getOption(StandardSocketOptions.SO_KEEPALIVE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * CompletionHandler
+     */
+    public static void ioCallback() {
+        Path path = Paths.get("D:\\Projects\\WebDev\\coding-sword\\src\\main\\java\\java7\\nio\\NIO-README.md");
+        try {
+            AsynchronousFileChannel channel = AsynchronousFileChannel.open(path);
+            ByteBuffer buffer = ByteBuffer.allocate(1_000);
+            channel.read(buffer, 0, buffer, new CompletionHandler<Integer, ByteBuffer>() {
+                @Override
+                public void completed(Integer result, ByteBuffer attachment) {
+                    System.out.println("Byte read: " + result);
+                }
+
+                @Override
+                public void failed(Throwable exc, ByteBuffer attachment) {
+                    exc.printStackTrace();
+                }
+            });
+            System.out.println("Other Task...");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * future
+     */
+    public static void ioFuture() {
+        Path path = Paths.get("D:\\Projects\\WebDev\\coding-sword\\src\\main\\java\\java7\\nio\\NIO-README.md");
+        try {
+            AsynchronousFileChannel channel = AsynchronousFileChannel.open(path);
+            ByteBuffer buffer = ByteBuffer.allocate(1_000);
+            Future<Integer> result = channel.read(buffer, 0);
+            while (!result.isDone()) {
+                System.out.println("Waiting...");
+            }
+            System.out.println("Byte read: " + result.get());
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void fileChannel() {
@@ -41,7 +133,7 @@ public class FilePath {
         ByteBuffer buffer = ByteBuffer.allocate(50);
         try {
             FileChannel channel = FileChannel.open(path, StandardOpenOption.READ);
-            channel.read(buffer, channel.size()-50);
+            channel.read(buffer, channel.size() - 50);
 
             Charset charset = Charset.forName("UTF-8");
             CharsetDecoder decoder = charset.newDecoder();
