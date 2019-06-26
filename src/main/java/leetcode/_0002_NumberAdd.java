@@ -17,10 +17,9 @@ public class _0002_NumberAdd {
 
 	public ListNode addTwoNumbers3(ListNode l1, ListNode l2) {
 		int sum = 0;
-		int i = 0;
 		ListNode l = new ListNode(0);
 		ListNode _l = l;
-		while (l1 != null || l2 != null) {
+		while (l1 != null || l2 != null || sum != 0) {
 			int _sum = 0;
 			if (l1 != null) {
 				_sum += l1.val;
@@ -34,7 +33,6 @@ public class _0002_NumberAdd {
 			_l.next = new ListNode(sum % 10);
 			sum /= 10;
 			_l = _l.next;
-			i++;
 		}
 		return l.next;
 	}
