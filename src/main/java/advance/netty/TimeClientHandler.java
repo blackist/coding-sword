@@ -28,7 +28,7 @@ public class TimeClientHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 10; i++) {
 			String reqMsg = "我是客户端 " + i + ": " + Thread.currentThread().getName() + System.getProperty("line.separator");
 			byte[] reqMsgByte = reqMsg.getBytes(StandardCharsets.UTF_8);
 			ByteBuf reqByteBuf = Unpooled.buffer(reqMsgByte.length);

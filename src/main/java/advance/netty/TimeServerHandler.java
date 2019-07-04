@@ -39,7 +39,7 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 		// buf.readBytes(req);
 		// String body = new String(req, StandardCharsets.UTF_8);
 		String body = (String) msg;
-		System.out.println(Thread.currentThread().getName() + " " + atomicInteger.addAndGet(1) + " => " + body);
+		System.out.println(Thread.currentThread().getName() + " " + atomicInteger.addAndGet(1) + " Rev: " + body);
 
 		/**
 		 * 回复消息
