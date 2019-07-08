@@ -1,4 +1,4 @@
-package org.blackist.jvm.loader;
+package jvm.loader;
 
 /**
  * TODO org.blackist.jvm.loader.Sample

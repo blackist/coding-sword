@@ -1,4 +1,4 @@
-package org.blackist.jvm.loader;
+package jvm.loader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -80,10 +80,23 @@ public class BLoader extends ClassLoader {
 
 		testLoader(loader2);
 		testLoader(loader3);
+
+		Class clazz = loader1.loadClass("Sample");
+		System.out.println(clazz.hashCode());
+		Object object = clazz.newInstance();
+
+		loader1 = null;
+		clazz = null;
+		object = null;
+
+		loader1 = new BLoader("loader1");
+		loader1.setPath("D:\\Cache\\loader\\client\\");
+		clazz = loader1.loadClass("Sample");
+		System.out.println(clazz.hashCode());
 	}
 
 	private static void testLoader(BLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-		Class clazz = loader.loadClass("org.blackist.jvm.loader.Sample");
+		Class clazz = loader.loadClass("jvm.loader.Sample");
 		Object object = clazz.newInstance();
 	}
 }

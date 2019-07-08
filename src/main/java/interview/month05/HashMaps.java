@@ -11,6 +11,7 @@ public class HashMaps {
         map.put("c", "ccc");
         map.put("d", "ddd");
         map.put("a", "aaa");
+        map.containsKey("aaa");
 
         Iterator iterator = map.keySet().iterator();
 
