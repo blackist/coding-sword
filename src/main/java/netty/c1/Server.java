@@ -1,4 +1,4 @@
-package advance.netty;
+package netty.c1;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -8,8 +8,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LineBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
 
 /**
  * TODO Netty Server
@@ -17,11 +15,13 @@ import io.netty.handler.codec.string.StringDecoder;
  * @author L.L Dong<liangl.dong@qq.com>
  * @since 2019/7/4
  */
-public class TimeServer {
+public class Server {
 
 	public static void main(String[] args) {
 		int port = 9800;
-		new TimeServer().bind(port);
+		int port2 = 9811;
+		new Server().bind(port);
+		new Server().bind(port2);
 		// 当前线程被netty阻塞
 		for (int i = 0; i < 10; i++) {
 			System.out.println("Run" + i);
@@ -43,8 +43,14 @@ public class TimeServer {
 		// ServerBootstrap 是 Netty 用于启动 NIO 服务端的辅助启动类，用于降低开发难度
 		ServerBootstrap bootstrap = new ServerBootstrap();
 		bootstrap.group(bossGroup, workGroup)
+				// 指定NIO模式
 				.channel(NioServerSocketChannel.class)
+				// TCP缓冲区
 				.option(ChannelOption.SO_BACKLOG, 1024)
+				.option(ChannelOption.SO_SNDBUF, 32 * 1024)
+				.option(ChannelOption.SO_RCVBUF, 32 * 1024)
+				// 保持连接
+				.option(ChannelOption.SO_KEEPALIVE, true)
 				.childHandler(new ChannelInitializer<SocketChannel>() {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
@@ -54,20 +60,19 @@ public class TimeServer {
 						// WorkerEventLoopGroup(Reactor中的分发器) next() 将SocketChannel注册到一个EventLoop的Selector中
 						// Channel持有ChannelPipeline, ChannelPipeline(Reactor中的处理器)维护着一个ChannelHandler链表队列
 						System.out.println("SocketChannel coming...");
-						/**
-						 * 添加 LineBasedFrameDecoder 与 StringDecoder解码器
-						 */
-						ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
-						ch.pipeline().addLast(new StringDecoder());
-						ch.pipeline().addLast(new TimeServerHandler());
+						ch.pipeline().addLast(new ServerHandler());
 					}
 				});
 
 		try {
-			ChannelFuture future = bootstrap.bind(port).sync();
+			ChannelFuture future = bootstrap.bind(9800).sync();
+			System.out.println(Thread.currentThread().getName() + ",服务器开始监听端口，等待客户端连接.........");
+
+			ChannelFuture future1 = bootstrap.bind(9811).sync();
 			System.out.println(Thread.currentThread().getName() + ",服务器开始监听端口，等待客户端连接.........");
 
 			future.channel().closeFuture().sync();
+			future1.channel().closeFuture().sync();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
