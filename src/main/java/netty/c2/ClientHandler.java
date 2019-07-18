@@ -1,13 +1,13 @@
-package advance.netty;
+package netty.c2;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import advance.rmi.Client;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * TODO Netty Client Channel Handler
@@ -15,7 +15,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @author L.L Dong<liangl.dong@qq.com>
  * @since 2019/7/4
  */
-public class TimeClientHandler extends ChannelInboundHandlerAdapter {
+public class ClientHandler extends ChannelInboundHandlerAdapter {
 
 	/**
 	 * 因为 Netty 采用线程池，所以这里使用原子操作类来进行计数
@@ -28,17 +28,15 @@ public class TimeClientHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
-		for (int i = 0; i < 10; i++) {
-			String reqMsg = "我是客户端 " + i + ": " + Thread.currentThread().getName() + System.getProperty("line.separator");
-			byte[] reqMsgByte = reqMsg.getBytes(StandardCharsets.UTF_8);
-			ByteBuf reqByteBuf = Unpooled.buffer(reqMsgByte.length);
-			/**
-			 * writeBytes：将指定的源数组的数据传输到缓冲区
-			 * 调用 ChannelHandlerContext 的 writeAndFlush 方法将消息发送给服务器
-			 */
-			reqByteBuf.writeBytes(reqMsgByte);
-			ctx.writeAndFlush(reqByteBuf);
-		}
+		String reqMsg = "Hello Netty$_";
+		byte[] reqMsgByte = reqMsg.getBytes(StandardCharsets.UTF_8);
+		ByteBuf reqByteBuf = Unpooled.buffer(reqMsgByte.length);
+		/**
+		 * writeBytes：将指定的源数组的数据传输到缓冲区
+		 * 调用 ChannelHandlerContext 的 writeAndFlush 方法将消息发送给服务器
+		 */
+		reqByteBuf.writeBytes(reqMsgByte);
+		ctx.writeAndFlush(reqByteBuf);
 	}
 
 	/**
@@ -46,13 +44,18 @@ public class TimeClientHandler extends ChannelInboundHandlerAdapter {
 	 */
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		// ByteBuf buf = (ByteBuf) msg;
-		// byte[] req = new byte[buf.readableBytes()];
-		// buf.readBytes(req);
-		// String body = new String(req, StandardCharsets.UTF_8);
-		String body = (String) msg;
-		System.out.println("Client " + (atomicInteger.addAndGet(1)) + "---" + Thread.currentThread().getName() + ", Server return Message：" + body);
-		ctx.close();
+		try {
+			// ByteBuf buf = (ByteBuf) msg;
+			// byte[] req = new byte[buf.readableBytes()];
+			// buf.readBytes(req);
+			// String body = new String(req, StandardCharsets.UTF_8);
+			String body = (String) msg;
+			System.out.println("Client " + Thread.currentThread().getName() + " Rcv: " + body);
+			// ctx.close();
+		} finally {
+			ReferenceCountUtil.release(msg);
+		}
+
 	}
 
 	/**
