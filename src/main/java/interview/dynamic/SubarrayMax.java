@@ -18,7 +18,7 @@ public class SubarrayMax {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String[] line0 = br.readLine().trim().split(" ");
+		String[] line0 = br.readLine().trim().split(",");
 
 		int[] arr = new int[line0.length];
 		for (int i = 0; i < line0.length; i++) {
@@ -42,8 +42,10 @@ public class SubarrayMax {
 				front = rear = i;
 			}
 			res = Math.max(res, sum);
-			System.out.println(front + " " + rear);
+
 		}
+		// 子序列
+		// System.out.println(front + " " + rear);
 		return res;
 	}
 }
