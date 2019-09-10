@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicStampedReference;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -34,5 +35,9 @@ public class CustomSyncronizer {
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
 		}
+	}
+
+	static class Sync extends AbstractQueuedSynchronizer {
+
 	}
 }

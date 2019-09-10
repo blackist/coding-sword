@@ -19,5 +19,7 @@ public class ObjectTest {
 
         Hashtable hashtable = new Hashtable();
         hashtable.put(null, null);
+
+        Math.floor(2.5);
     }
 }

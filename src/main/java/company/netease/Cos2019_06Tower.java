@@ -1,4 +1,4 @@
-package leetcode.netease;
+package company.netease;
 
 import java.io.BufferedReader;
 import java.io.IOException;

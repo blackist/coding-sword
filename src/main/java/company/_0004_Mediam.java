@@ -1,4 +1,4 @@
-package leetcode;
+package company;
 
 /**
  * TODO 寻找两个有序数组的中位数
