@@ -18,7 +18,6 @@ public class Main3 {
 	    int n = Integer.parseInt(line0);
 		String line1 = br.readLine().trim();
 		int m = Integer.parseInt(line1);
-
 	    int[][] arr = new int[n][m];
 	    for (int i = 0; i < n; i++) {
 	        String[] line2 = br.readLine().split(" ");
