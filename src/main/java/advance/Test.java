@@ -24,5 +24,8 @@ public class Test {
 
 	public static void set(Map map) {
 		map = null;
+		Thread.State state;
+		Class c;
+		Object o;
 	}
 }
