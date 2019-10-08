@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
 /**
@@ -16,10 +17,10 @@ public class Test {
 
 
 	public static void main(String[] args) {
-		Map<String, String> map = new HashMap<>(1);
-		map.put("a", "A");
-		set(map);
-		System.out.println(map);
+		int a = 8;
+		int b = -8;
+		System.out.println(a >> 2);
+		System.out.println(b >> 2);
 	}
 
 	public static void set(Map map) {
