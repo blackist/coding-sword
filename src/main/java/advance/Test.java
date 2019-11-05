@@ -28,5 +28,7 @@ public class Test {
 		Thread.State state;
 		Class c;
 		Object o;
+		String a;
+
 	}
 }

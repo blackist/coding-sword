@@ -1,18 +1,18 @@
 package advance.map;
 
 /**
- * TODO 自定义 Hash Map
+ * TODO 自定义 Hash IMap
  *
  * @author L.L Dong<liangl.dong@qq.com>
  * @since 2019/9/12
  */
-public class HashMap<K, V> implements Map<K, V> {
+public class HashMapImpl<K, V> implements IMap<K, V> {
 
 	private int size = 0;
 
 	private Entry<K, V>[] table;
 
-	public HashMap() {
+	public HashMapImpl() {
 		table = new Entry[16];
 	}
 
@@ -60,7 +60,7 @@ public class HashMap<K, V> implements Map<K, V> {
 		return size;
 	}
 
-	class Entry<K, V> implements Map.Entry<K, V> {
+	class Entry<K, V> implements IMap.Entry<K, V> {
 
 		K k;
 		V v;

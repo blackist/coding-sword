@@ -10,16 +10,16 @@ public class HashMapApp {
 
 
 	public static void main(String[] args) {
-		Map<String, String> map = new HashMap<>();
+		IMap<String, String> IMap = new HashMapImpl<>();
 
-		map.put("Black", "black");
-		map.put("Foo", "foo");
+		IMap.put("Black", "black");
+		IMap.put("Foo", "foo");
 
 		for (int i = 0; i < 100000; ++i) {
-			map.put("Black" + i, "black" + i);
+			IMap.put("Black" + i, "black" + i);
 		}
 
-		System.out.println(map.size());
-		System.out.println(map.get("Foo"));
+		System.out.println(IMap.size());
+		System.out.println(IMap.get("Foo"));
 	}
 }

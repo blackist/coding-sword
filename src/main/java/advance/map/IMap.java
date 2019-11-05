@@ -6,7 +6,7 @@ package advance.map;
  * @author L.L Dong<liangl.dong@qq.com>
  * @since 2019/9/12
  */
-public interface Map<K, V> {
+public interface IMap<K, V> {
 
 	V put(K k, V v);
 
